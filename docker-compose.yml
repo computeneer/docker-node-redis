@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis
+    networks:
+      - node-test
+    container_name: rediscache
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  node:
+    container_name: express
+    restart: unless-stopped
+    build: .
+    networks:
+      - node-test
+    ports:
+      - "5000:8080"
+    environment:
+      - REDIS_HOST=redis://redis:6379
+    links:
+      - redis:redis
+networks:
+  node-test:
